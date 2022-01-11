@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+
+<body>
+
+<div class="container" style="max-width: 100%;">
+  <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+  <div style="display: flex">
+    <form onsubmit="return false;">
+<!--      검색옵션 선택상자-->
+      <select name="subject", id="subject" size="1">
+        <option value="filename">파일명</option>
+        <option value="resolution">해상도</option>
+      </select>
+<!--      검색 내용 입력상자-->
+      : <input type="text" id="file" name="file" onkeypress="if(event.keyCode == 13) enter();" >
+    </form>
+    <button id="submit" value="검색">검색</button>
+    <script type="text/javascript">
+
+    //엔터키 이벤트 발생
+      function enter(){
+       $("#submit").click();
+      }
+
+    //검색창 클릭 이벤트 발생
+      $("#submit").click(function(e){
+        const keyword = document.getElementById('file').value;
+        const box_option = document.getElementById('subject').value;
+        console.log(keyword);
+        console.log(box_option);
+
+    //입력된 검색내용 서비스클래스로 보내는 부분 ( Ajax )
+        $.ajax({
+          url: "/images/search",
+          method: "POST",
+          data: { search: keyword, option: box_option },
+          dataType: "json"
+        }).done(function( data ) {
+    //리턴된 데이터를 웹상에 다시 표출하는 부분
+          var htmlString = '';
+          data.forEach(function(e) {
+            console.log(e);
+            htmlString += `<tr>
+              <td style="white-space:normal; vertical-align: middle">`+e.id+`</td>
+              <td style="word-break:break-all; vertical-align: middle"  width="400px" >`+e.filename+`</td>
+              <td style="text-align:center; vertical-align: middle">`+e.width+`</td>
+              <td style="text-align:center; vertical-align: middle">`+e.height+`</td>
+              <td style="text-align:center; vertical-align: middle">`+e.originLeft+`</td>
+              <td style="text-align:center; vertical-align: middle">`+e.originTop+`</td>
+              <td style="text-align:center; vertical-align: middle">`+e.resolution+`</td>
+              <td style="text-align:center; vertical-align: middle">`+e.bandCounts+`</td>
+              <td style="text-align:center; vertical-align: middle">`+e.unitType+`</td>
+              <td style="text-align:center; vertical-align: middle">`+e.noDataValue+`</td>
+              <td style="word-break:break-all; vertical-align: middle">`+e.projection+`</td>
+            </tr>`
+          });
+          console.log(htmlString)
+
+          $(".search_result").html(htmlString)
+        }).fail(function( jqXHR, textStatus ) {
+          alert( "error" );
+        });
+      });
+
+</script>
+  </div>
+  <div>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>file</th>
+        <th>width</th>
+        <th>height</th>
+        <th>origin_left</th>
+        <th>origin_top</th>
+        <th>resolution</th>
+        <th>band_counts</th>
+        <th>unit_type</th>
+        <th>projection</th>
+      </tr>
+      </thead>
+      <tbody class="search_result">
+
+        <tr th:each="image : ${images}">
+          <td th:text="${image.id}" style="white-space:normal; vertical-align: middle"></td>
+          <td th:text="${image.filename}" style="word-break:break-all; vertical-align: middle"  width="400px" ></td>
+          <td th:text="${image.width}" style="text-align:center; vertical-align: middle"></td>
+          <td th:text="${image.height}" style="text-align:center; vertical-align: middle"></td>
+          <td th:text="${image.originLeft}" style="text-align:center; vertical-align: middle"></td>
+          <td th:text="${image.originTop}" style="text-align:center; vertical-align: middle"></td>
+          <td th:text="${image.resolution}" style="text-align:center; vertical-align: middle"></td>
+          <td th:text="${image.bandCounts}" style="text-align:center; vertical-align: middle"></td>
+          <td th:text="${image.unitType}" style="text-align:center; vertical-align: middle"></td>
+          <td th:text="${image.projection}" style="word-break:break-all; vertical-align: middle"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div th:replace="fragments/footer :: footer"/>
+</div> <!-- /container -->
+</body>
+
+</html>

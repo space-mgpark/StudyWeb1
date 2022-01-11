@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+  <title>Image</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+
+<div class="container">
+  <div th:replace="fragments/bodyHeader :: bodyHeader" />
+  <div class="jumbotron">
+    <h1>Satellite Image</h1>
+<!--    <p class="lead">회원 기능</p>-->
+    <p>
+      <a class="btn btn-lg btn-secondary" href="/images">Search</a>
+    </p>
+
+  </div>
+  <div th:replace="fragments/footer :: footer" />
+
+  <style>
+
+body {
+
+	background-image: url("./image/backback.jpg");
+	width="100"; height="200";
+	background-repeat: no-repeat;
+	background-position: 50% 7%;
+	background-size: 39%;
+}
+
+</style>
+<!--  <img src="./image/homework.jpg" width="700" height="700">-->
+</div> <!-- /container -->
+</body>
+</html>
